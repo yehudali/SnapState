@@ -10,7 +10,7 @@ class Coordinates(BaseModel):
 # 1.
 # --- Ingestion (Kafka Producer / HTTP POST) ---
 class IncidentCreate(BaseModel):
-    Incident_id: UUID4 = Field(default_factory=UUID4, description="Unique identifier for the incident")
+    incident_id: UUID4 = Field(default_factory=UUID4, description="Unique identifier for the incident")
     creator_id: str =  Field(...) # (min_length=3, max_length=50)
     Incident_level: str
     location: Coordinates
@@ -22,17 +22,22 @@ class IncidentCreate(BaseModel):
     
 # 2.
 # --- State Management (Redis Ingestion / HTTP POST) ---
+from shard.utils.get_utc import get_utc_now
+
 class LocationUpdate(BaseModel):
+    incident_id: UUID4
     responder_id: str = Field(..., min_length=3, max_length=50)
     coordinates: Coordinates
+    timestamp: datetime = Field(default_factory=get_utc_now)
 
 # 3.
 # --- Client Retrieval (HTTP GET Response) ---
 
 class ResponderLocation(BaseModel):
     responder_id: str
-    distance_meters: float = Field(..., ge=0)
+    distance_meters: float = Field(0.0, ge=0)
     coordinates: Coordinates
 
 class IncidentLocationsResponse(BaseModel):
+    incident_id: UUID4
     active_responders: List[ResponderLocation]
