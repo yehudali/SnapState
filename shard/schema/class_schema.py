@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, UUID4, field_validator,EmailStr
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 import uuid
 from shard.utils.get_utc import get_utc_now
 

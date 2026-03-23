@@ -68,7 +68,7 @@ class LocationService:
             responders.append(
                 ResponderLocation(
                     responder_id=member,
-                    distance_meters=distance * 1000, # המרה למטרים
+                    # distance_meters=distance * 1000, # המרה למטרים
                     coordinates=Coordinates(lat=lat, lon=lon)
                 )
             )
@@ -106,7 +106,7 @@ class LocationService:
                 responders.append(
                     ResponderLocation(
                         responder_id=member,
-                        distance_meters=0.0, 
+                        # distance_meters=0.0, 
                         coordinates=Coordinates(lat=lat, lon=lon)
                     )
                 )
