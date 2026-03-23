@@ -5,10 +5,9 @@ from shard.config.configurator_class import Configurator
 from shard.kafka_service.kafka_producer import KafkaProducer
 from shard.schema.class_schema import IncidentCreate, LocationUpdate, IncidentLocationsResponse
 from EventRecorder.dal import ActionsKafka, LocationService
-
+from shard.database.redis_manager import RedisManager
 
 config = Configurator()
-
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
@@ -19,7 +18,8 @@ app = FastAPI(
 try:
     producer = KafkaProducer(bootstrap_servers = config.BOOTSTRAP_SERVERS,client_id="EventRecorder")
     kafka_action = ActionsKafka(producer)
-    location_service = LocationService(redis_host = config.REDIS_HOST, redis_port=config.REDIS_PORT)
+    redis_con = RedisManager(redis_host = config.REDIS_HOST, redis_port=config.REDIS_PORT)
+    location_service = LocationService(redis_con)
 except Exception as e:
     logger.critical(f"Failed to initialize infrastructure services: {e}")
     raise

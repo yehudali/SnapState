@@ -4,6 +4,8 @@ from pydantic import UUID4
 from typing import List, Tuple, Optional, cast
 from shard.kafka_service.kafka_producer import KafkaProducer
 from shard.schema.class_schema import IncidentCreate, LocationUpdate, IncidentLocationsResponse, ResponderLocation, Coordinates
+from shard.database.redis_manager import RedisManager
+
 
 class ActionsKafka:
     def __init__(self, producer : KafkaProducer):
@@ -23,12 +25,8 @@ class ActionsKafka:
 
 
 class LocationService:
-    def __init__(self, redis_host: str , redis_port: int):
-        self.redis_client = redis.Redis(
-            host=redis_host, 
-            port=redis_port, 
-            decode_responses=True # מחזיר Strings במקום Bytes
-        )
+    def __init__(self, redis_client: RedisManager):
+        self.redis_client = redis_client.redis_client
         self.incident_ttl_seconds = 7200
     
 
