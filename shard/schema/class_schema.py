@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, UUID4, field_validator
+from pydantic import BaseModel, Field, UUID4, field_validator,EmailStr
 from datetime import datetime
 from typing import List
 import uuid
@@ -14,18 +14,20 @@ class Coordinates(BaseModel):
 class IncidentCreate(BaseModel):
     incident_id: UUID4 = Field(default_factory=uuid.uuid4, description="Unique identifier for the incident")
     created_at: datetime = Field(default_factory=get_utc_now)
-    Incident_level: str
+    incident_level: str
     location: Coordinates
     description: str = Field(max_length=500)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-
-    def to_kafka_payload(self) -> str:
-        return self.model_dump_json()
     
 # 2.
 # --- State Management (Redis Ingestion / HTTP POST) ---
 
-
+class User(BaseModel):
+    personal_number: str
+    first_name: str
+    last_name: str
+    phone_number: str
+    email: EmailStr
+    
 class LocationUpdate(BaseModel):
     incident_id: UUID4
     responder_id: str = Field(..., min_length=3, max_length=50)
