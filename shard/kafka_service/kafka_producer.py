@@ -11,7 +11,7 @@ class KafkaProducer:
                 }
         
         try:
-            self.producer :Producer = Producer(self.conf)
+            self.producer :Producer = Producer(self.conf) # type: ignore
             print("INFO", "kafka DEBUG create")
         except KafkaException as e:
             print("ERROR", f"failed to create kafka producer: {e}")

@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field, UUID4, field_validator
 from datetime import datetime
 from typing import List
+import uuid
+from shard.utils.get_utc import get_utc_now
 
 # --- Base Models ---
 class Coordinates(BaseModel):
@@ -10,8 +12,8 @@ class Coordinates(BaseModel):
 # 1.
 # --- Ingestion (Kafka Producer / HTTP POST) ---
 class IncidentCreate(BaseModel):
-    incident_id: UUID4 = Field(default_factory=UUID4, description="Unique identifier for the incident")
-    creator_id: str =  Field(...) # (min_length=3, max_length=50)
+    incident_id: UUID4 = Field(default_factory=uuid.uuid4, description="Unique identifier for the incident")
+    created_at: datetime = Field(default_factory=get_utc_now)
     Incident_level: str
     location: Coordinates
     description: str = Field(max_length=500)
@@ -22,7 +24,7 @@ class IncidentCreate(BaseModel):
     
 # 2.
 # --- State Management (Redis Ingestion / HTTP POST) ---
-from shard.utils.get_utc import get_utc_now
+
 
 class LocationUpdate(BaseModel):
     incident_id: UUID4

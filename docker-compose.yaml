@@ -32,3 +32,39 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9093
     depends_on:
       - kafka
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+
+  eventrecorder:
+    container_name: EventRecorder
+
+    build:
+      context: .
+      dockerfile: eventrecorder/Dockerfile
+
+    ports:
+      - 8000:8000
+
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9093
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+   
+
+    depends_on:
+      - kafka
+      - redis
+    
+
+
+volumes:
+  redis_data:
+
