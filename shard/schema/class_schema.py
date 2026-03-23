@@ -25,8 +25,8 @@ class User(BaseModel):
     personal_number: str
     first_name: str
     last_name: str
-    phone_number: str
-    email: EmailStr
+    phone_number: Optional[str] = None
+    email: Optional[EmailStr] = None
     
 class LocationUpdate(BaseModel):
     incident_id: UUID4
@@ -39,7 +39,7 @@ class LocationUpdate(BaseModel):
 
 class ResponderLocation(BaseModel):
     responder_id: str
-    distance_meters: float = Field(0.0, ge=0)
+    # distance_meters: float = Field(0.0, ge=0)
     coordinates: Coordinates
 
 class IncidentLocationsResponse(BaseModel):
